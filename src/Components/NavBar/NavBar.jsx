@@ -1,8 +1,8 @@
 import SearchBar from "../SearchBar/SearchBar";
 const NavBar = (props) => {
     return ( 
-        <div>
-            <h2>Hello world!</h2>
+        <div className="header">
+            <h1>Video Game Analysis</h1>
             <SearchBar />
         </div>
      );

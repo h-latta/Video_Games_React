@@ -1,37 +1,39 @@
 import Chart from "react-google-charts";
-import React, { useState, useEffect } from 'react';
-import axios from "axios";
+import React, { useState } from 'react';
+
 
 const OldChart = (props) => {
+    function generateChartData(){
+    console.log(props.games)
 
-    const [Games, SetGames] = useState([])
-    const [ChartData, SetChartData] = useState([])
+    let filteredGames = props.games.filter(game => game.year > 2013)
+    console.log(filteredGames)
 
-    async function getAllGames(){
-      const search = await axios.get(`https://localhost:7260/api/games`)
-      SetGames(search.VideoGames)
+    let platforms = filteredGames.map(game => game.platform)
+    console.log(platforms)
+
+    let distinctPlatforms = [...new Set(platforms)]
+    console.log(distinctPlatforms)
+
+    let platformArrays = distinctPlatforms.map(platform => {
+
+        let allGamesForPlatform = filteredGames.filter(game => game.platform == platform)
+        let salesForPlatform = allGamesForPlatform.reduce((prev, next) => prev + next.globalSales, 0)
+
+        return [platform, salesForPlatform, "silver"]
+    })
+
+    const data = [
+        ["Platform", "Sales in Millions", { role: "style" }],
+        ...platformArrays
+      ];
+      return data;
     }
-    
-    let tempChartData = Games && Games.map((game) => {
-        return [game.Platform, game.GlobalSales]
-    });
-    SetChartData(tempChartData)
-
-    useEffect(() => {
-        getAllGames()
-    }, [Games])
-
 
     return ( 
         <div>
-            <Chart
-            chartType="Table"
-            data={[["Platform", "Global Sales"], [ChartData.Platform, ChartData.GlobalSales]]}
-            width="100%"
-            height="400px"
-            legendToggle
-            options={{legend: {position: 'bottom'}}}
-            />
+            <h3>Global Sales in Millions per Platform since 2013</h3>
+            <Chart chartType="ColumnChart" width="100%" height="400px" data={generateChartData()} />
         </div>
      );
 }
