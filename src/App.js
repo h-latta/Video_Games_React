@@ -18,7 +18,7 @@ function App() {
     <div className="App">
       <nav><NavBar /></nav>
       <h1>Hello world!</h1>
-      <OldChart games={getAllGames} />
+      <OldChart games={getAllGames()} />
     </div>
   );
 }
